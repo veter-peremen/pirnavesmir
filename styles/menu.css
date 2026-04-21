@@ -117,6 +117,131 @@
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
+.order-builder {
+  margin-top: 12px;
+}
+
+.order-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.order-form__group {
+  display: flex;
+  gap: 28px;
+}
+
+.order-form__panel {
+  flex: 1 1 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.order-form__title {
+  margin: 0;
+  font-size: 1.55rem;
+  font-weight: 700;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field__label {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.field__control {
+  min-height: 52px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background-color: #ffffff;
+  font: inherit;
+  color: var(--text);
+}
+
+.field__control:focus {
+  outline: 2px solid rgba(163, 52, 31, 0.22);
+  border-color: var(--accent);
+}
+
+.field__control--textarea {
+  min-height: 170px;
+  resize: vertical;
+}
+
+.field__note {
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+.field--checkbox {
+  flex-direction: row;
+  align-items: center;
+}
+
+.field--checkbox input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+}
+
+.field--radio {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.field__choice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.field__choice input {
+  accent-color: var(--accent);
+}
+
+.order-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 14px;
+}
+
+.order-form__button {
+  min-width: 160px;
+  padding: 14px 24px;
+  border: 1px solid var(--accent);
+  border-radius: 14px;
+  background-color: var(--accent);
+  color: #ffffff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.order-form__button:hover {
+  background-color: var(--accent-dark);
+  border-color: var(--accent-dark);
+}
+
+.order-form__button--ghost {
+  background-color: transparent;
+  color: var(--accent);
+}
+
+.order-form__button--ghost:hover {
+  color: #ffffff;
+}
+
 @media (max-width: 800px) {
   .menu-intro {
     flex-direction: column;
@@ -128,6 +253,10 @@
 
   .dish-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .order-form__group {
+    flex-direction: column;
   }
 }
 
@@ -147,5 +276,13 @@
 
   .dish-card__image {
     border-radius: 26px;
+  }
+
+  .order-form__actions {
+    flex-direction: column-reverse;
+  }
+
+  .order-form__button {
+    width: 100%;
   }
 }

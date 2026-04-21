@@ -129,6 +129,105 @@
           </div>
         </div>
       </section>
+
+      <section class="section order-builder" aria-labelledby="order-builder-title">
+        <h2 id="order-builder-title" class="section-title">Сделать заказ</h2>
+        <form class="order-form" action="https://httpbin.org/post" method="post">
+          <div class="order-form__group">
+            <div class="order-form__panel">
+              <h3 class="order-form__title">Ваш заказ</h3>
+
+              <label class="field">
+                <span class="field__label">Суп</span>
+                <select class="field__control" name="soup">
+                  <option value="">-- Выберите суп --</option>
+                  <option value="borscht">Борщ с пампушками</option>
+                  <option value="shchi">Щи с белыми грибами</option>
+                  <option value="ukha">Уха с судаком и укропом</option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span class="field__label">Главное блюдо</span>
+                <select class="field__control" name="main_course">
+                  <option value="">-- Выберите главное блюдо --</option>
+                  <option value="pozharsky">Пожарская котлета с картофелем</option>
+                  <option value="vareniki">Вареники с картофелем и грибами</option>
+                  <option value="draniki">Драники со сметаной и луком</option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span class="field__label">Напиток</span>
+                <select class="field__control" name="drink">
+                  <option value="">-- Выберите напиток --</option>
+                  <option value="mors">Клюквенный морс</option>
+                  <option value="vzvar">Яблочный взвар</option>
+                  <option value="kissel">Облепиховый кисель</option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span class="field__label">Комментарии к заказу</span>
+                <textarea class="field__control field__control--textarea" name="comment"></textarea>
+              </label>
+            </div>
+
+            <div class="order-form__panel">
+              <h3 class="order-form__title">Ваши данные</h3>
+
+              <label class="field">
+                <span class="field__label">Имя</span>
+                <input class="field__control" type="text" name="full_name">
+              </label>
+
+              <label class="field">
+                <span class="field__label">Email</span>
+                <input class="field__control" type="email" name="email">
+              </label>
+
+              <label class="field field--checkbox">
+                <input type="checkbox" name="subscribe" value="yes" checked>
+                <span>Получать информацию о скидках и акциях</span>
+              </label>
+
+              <label class="field">
+                <span class="field__label">Номер телефона</span>
+                <input class="field__control" type="tel" name="phone">
+              </label>
+
+              <label class="field">
+                <span class="field__label">Адрес доставки</span>
+                <input class="field__control" type="text" name="delivery_address">
+                <span class="field__note">Доставка осуществляется только по Москве</span>
+              </label>
+
+              <fieldset class="field field--radio">
+                <legend class="field__label">Время доставки</legend>
+                <label class="field__choice">
+                  <input type="radio" name="delivery_type" value="asap" checked>
+                  <span>Как можно скорее</span>
+                </label>
+                <label class="field__choice">
+                  <input type="radio" name="delivery_type" value="time">
+                  <span>К указанному времени</span>
+                </label>
+              </fieldset>
+
+              <label class="field">
+                <span class="field__label">Укажите время доставки</span>
+                <input class="field__control" type="time" name="delivery_time">
+                <span class="field__note">Доступное время доставки с 7:00 до 23:00</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="order-form__actions">
+            <button class="order-form__button order-form__button--ghost" type="reset">Сбросить</button>
+            <button class="order-form__button" type="submit">Отправить</button>
+          </div>
+        </form>
+      </section>
     </div>
   </main>
 
