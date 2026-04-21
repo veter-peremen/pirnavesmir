@@ -8,6 +8,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=PT+Serif:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles/style.css">
+  <link rel="stylesheet" href="styles/menu.css">
+  <link rel="stylesheet" href="styles/orders.css">
   <link rel="stylesheet" href="styles/print.css" media="print">
 </head>
 <body>
@@ -25,15 +27,26 @@
   </header>
 
   <main class="site-main">
-    <div class="container">
-      <section class="section placeholder-section" aria-labelledby="order-page-title">
-        <p class="eyebrow">Будущая форма заказа</p>
-        <h2 id="order-page-title" class="section-title">Раздел заказов подготовлен под оформление славянских ланчей</h2>
+    <div class="container orders-page">
+      <section class="section orders-intro" aria-labelledby="order-page-title">
+        <p class="eyebrow">История заказов</p>
+        <h2 id="order-page-title" class="section-title">Просмотр и управление оформленными заказами</h2>
         <p class="lead">
-          Страница уже подключена к общей навигации и стилям, а дальше будет расширена формой заказа супов, горячих блюд, гарниров и выпечки с валидацией и логикой оформления.
+          На странице собраны оформленные заказы по славянскому меню: можно быстро проверить состав, открыть детали доставки, скорректировать контактные данные и удалить лишний заказ.
         </p>
-        <a class="action-link" href="checkout.html">Перейти к оформлению заказа</a>
+        <p class="menu-data-status" id="orders-data-status">Загружаем историю заказов...</p>
       </section>
+
+      <section class="section orders-empty is-hidden" id="orders-empty" aria-labelledby="orders-empty-title">
+        <p class="eyebrow">Пока пусто</p>
+        <h2 id="orders-empty-title" class="section-title">Заказы еще не оформлялись</h2>
+        <p class="lead">
+          Перейдите к меню, соберите обед из супа, горячего и напитка, а затем подтвердите доставку. После оформления заказ сразу появится здесь.
+        </p>
+        <a class="action-link" href="menu.html">Собрать первый ланч</a>
+      </section>
+
+      <div class="orders-grid" id="orders-list" aria-live="polite"></div>
     </div>
   </main>
 
@@ -44,5 +57,8 @@
       <p>Готовим в Москве, ул. Хлебная, 8.</p>
     </div>
   </footer>
+
+  <div class="modal-layer" id="modal-layer"></div>
+  <script type="module" src="scripts/orders-page.js"></script>
 </body>
 </html>

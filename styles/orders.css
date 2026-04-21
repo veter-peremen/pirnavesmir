@@ -1,0 +1,275 @@
+.orders-page {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.orders-intro .lead {
+  margin-bottom: 18px;
+}
+
+.orders-empty {
+  text-align: center;
+}
+
+.orders-empty .action-link {
+  align-self: center;
+}
+
+.orders-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.order-card {
+  padding: 28px;
+  border: 1px solid rgba(22, 22, 22, 0.08);
+  border-radius: 28px;
+  background-color: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.order-card__top {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.order-card__eyebrow {
+  margin: 0 0 8px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.order-card__title {
+  margin: 0;
+  font-size: 1.6rem;
+  line-height: 1.2;
+}
+
+.order-card__total {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-end;
+  text-align: right;
+}
+
+.order-card__total strong {
+  font-size: 1.55rem;
+}
+
+.order-card__date {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.order-card__meta {
+  margin: 18px 0 0;
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.order-card__meta p {
+  margin: 0;
+}
+
+.order-card__dishes {
+  margin: 22px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  list-style: none;
+}
+
+.order-card__dish {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background-color: rgba(163, 52, 31, 0.09);
+  color: var(--accent);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.order-card__actions {
+  margin-top: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.order-card__button {
+  min-width: 150px;
+  padding: 12px 18px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background-color: transparent;
+  color: var(--accent);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.order-card__button:hover {
+  color: #ffffff;
+  background-color: var(--accent);
+}
+
+.order-card__button--danger {
+  border-color: #8f2b22;
+  color: #8f2b22;
+}
+
+.order-card__button--danger:hover {
+  background-color: #8f2b22;
+  border-color: #8f2b22;
+}
+
+.modal-layer {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background-color: rgba(17, 17, 21, 0.48);
+  z-index: 30;
+}
+
+.modal-layer--visible {
+  display: flex;
+}
+
+.modal-card {
+  width: min(760px, 100%);
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  padding: 28px;
+  border: 1px solid rgba(22, 22, 22, 0.08);
+  border-radius: 28px;
+  background-color: #fffdf9;
+  box-shadow: 0 28px 72px rgba(0, 0, 0, 0.22);
+}
+
+.modal-card__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.modal-card__title {
+  margin: 0;
+  font-size: 1.9rem;
+}
+
+.modal-card__close {
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(22, 22, 22, 0.08);
+  border-radius: 50%;
+  background-color: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.modal-card__close:hover {
+  color: var(--accent);
+  border-color: rgba(163, 52, 31, 0.24);
+}
+
+.modal-card__lead {
+  margin: 0 0 18px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.modal-details {
+  display: grid;
+  gap: 12px;
+}
+
+.modal-details__row {
+  padding: 14px 16px;
+  border-radius: 18px;
+  background-color: rgba(244, 238, 228, 0.72);
+}
+
+.modal-details__label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--muted);
+}
+
+.modal-details__value {
+  margin: 0;
+  font-weight: 700;
+  line-height: 1.55;
+}
+
+.modal-dishes {
+  margin: 0;
+  padding-left: 20px;
+  line-height: 1.8;
+  color: var(--muted);
+}
+
+.modal-actions {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+@media (max-width: 900px) {
+  .orders-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .order-card {
+    padding: 22px;
+    border-radius: 24px;
+  }
+
+  .order-card__top {
+    flex-direction: column;
+  }
+
+  .order-card__total {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .order-card__actions,
+  .modal-actions {
+    flex-direction: column;
+  }
+
+  .order-card__button,
+  .modal-actions .order-form__button {
+    width: 100%;
+  }
+
+  .modal-card {
+    padding: 20px;
+    border-radius: 22px;
+  }
+
+  .modal-card__title {
+    font-size: 1.6rem;
+  }
+}
