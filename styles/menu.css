@@ -50,6 +50,32 @@
   font-weight: 700;
 }
 
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 0 0 18px;
+}
+
+.filter-bar__button {
+  padding: 10px 16px;
+  border: 1px solid rgba(163, 52, 31, 0.18);
+  border-radius: 999px;
+  background-color: rgba(255, 255, 255, 0.78);
+  color: var(--accent);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.filter-bar__button:hover,
+.filter-bar__button.active {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: #ffffff;
+}
+
 .dish-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -325,6 +351,10 @@
 @media (max-width: 600px) {
   .menu-section__title {
     text-align: center;
+  }
+
+  .filter-bar {
+    justify-content: center;
   }
 
   .dish-grid {

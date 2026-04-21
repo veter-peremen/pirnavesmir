@@ -38,6 +38,8 @@
         <aside class="menu-intro__note" aria-label="Подсказка по меню">
           <h3 class="menu-intro__subtitle">Как собираем набор</h3>
           <p>1 суп + 1 горячее + 1 напиток</p>
+          <p>Салаты и закуски можно добавлять для более плотного обеда</p>
+          <p>Десерт подбирается отдельно и не мешает базовому набору</p>
           <p>Доставка по Москве к выбранному времени</p>
           <p>Порции рассчитаны на плотный обед без добора снеков</p>
         </aside>
@@ -45,17 +47,32 @@
 
       <section class="menu-section" id="soups" aria-labelledby="soups-title">
         <h2 id="soups-title" class="menu-section__title">Выберите суп</h2>
+        <div class="filter-bar" data-category="soup"></div>
         <div class="dish-grid" data-category="soup"></div>
       </section>
 
       <section class="menu-section" id="mains" aria-labelledby="mains-title">
         <h2 id="mains-title" class="menu-section__title">Выберите главное блюдо</h2>
+        <div class="filter-bar" data-category="main-course"></div>
         <div class="dish-grid" data-category="main-course"></div>
+      </section>
+
+      <section class="menu-section" id="salads" aria-labelledby="salads-title">
+        <h2 id="salads-title" class="menu-section__title">Выберите салат или стартер</h2>
+        <div class="filter-bar" data-category="salad"></div>
+        <div class="dish-grid" data-category="salad"></div>
       </section>
 
       <section class="menu-section" id="drinks" aria-labelledby="drinks-title">
         <h2 id="drinks-title" class="menu-section__title">Выберите напиток</h2>
+        <div class="filter-bar" data-category="drink"></div>
         <div class="dish-grid" data-category="drink"></div>
+      </section>
+
+      <section class="menu-section" id="desserts" aria-labelledby="desserts-title">
+        <h2 id="desserts-title" class="menu-section__title">Выберите десерт</h2>
+        <div class="filter-bar" data-category="dessert"></div>
+        <div class="dish-grid" data-category="dessert"></div>
       </section>
 
       <section class="section order-builder" aria-labelledby="order-builder-title">
@@ -76,7 +93,9 @@
 
               <input type="hidden" name="soup" id="order-field-soup">
               <input type="hidden" name="main-course" id="order-field-main-course">
+              <input type="hidden" name="salad" id="order-field-salad">
               <input type="hidden" name="drink" id="order-field-drink">
+              <input type="hidden" name="dessert" id="order-field-dessert">
 
               <label class="field">
                 <span class="field__label">Комментарии к заказу</span>

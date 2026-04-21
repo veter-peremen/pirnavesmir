@@ -1,6 +1,33 @@
 import { localDishes } from "./data/local-dishes.js";
 
-const CATEGORY_ORDER = ["soup", "main-course", "drink"];
+const CATEGORY_ORDER = ["soup", "main-course", "salad", "drink", "dessert"];
+
+const filterConfig = {
+  soup: [
+    { kind: "fish", label: "рыбный" },
+    { kind: "meat", label: "мясной" },
+    { kind: "veg", label: "вегетарианский" }
+  ],
+  "main-course": [
+    { kind: "fish", label: "рыбное" },
+    { kind: "meat", label: "мясное" },
+    { kind: "veg", label: "вегетарианское" }
+  ],
+  salad: [
+    { kind: "fish", label: "рыбный" },
+    { kind: "meat", label: "мясной" },
+    { kind: "veg", label: "вегетарианский" }
+  ],
+  drink: [
+    { kind: "cold", label: "холодный" },
+    { kind: "hot", label: "горячий" }
+  ],
+  dessert: [
+    { kind: "small", label: "маленькая порция" },
+    { kind: "medium", label: "средняя порция" },
+    { kind: "large", label: "большая порция" }
+  ]
+};
 
 const summaryConfig = {
   soup: {
@@ -11,16 +38,34 @@ const summaryConfig = {
     title: "Главное блюдо",
     empty: "Блюдо не выбрано"
   },
+  salad: {
+    title: "Салат или стартер",
+    empty: "Блюдо не выбрано"
+  },
   drink: {
     title: "Напиток",
     empty: "Напиток не выбран"
+  },
+  dessert: {
+    title: "Десерт",
+    empty: "Десерт не выбран"
   }
 };
 
 const selection = {
   soup: null,
   "main-course": null,
-  drink: null
+  salad: null,
+  drink: null,
+  dessert: null
+};
+
+const activeFilters = {
+  soup: null,
+  "main-course": null,
+  salad: null,
+  drink: null,
+  dessert: null
 };
 
 const dishesByCategory = CATEGORY_ORDER.reduce((acc, category) => {
@@ -31,25 +76,54 @@ const dishesByCategory = CATEGORY_ORDER.reduce((acc, category) => {
 }, {});
 
 document.addEventListener("DOMContentLoaded", () => {
+  renderAllFilters();
   renderAllCategories();
-  bindCardSelection();
+  bindInteractions();
   bindFormReset();
   applyDemoPreset();
   updateSummary();
 });
 
-function renderAllCategories() {
+function renderAllFilters() {
   CATEGORY_ORDER.forEach((category) => {
-    const container = document.querySelector(`[data-category="${category}"]`);
+    const container = document.querySelector(`.filter-bar[data-category="${category}"]`);
 
     if (!container) {
       return;
     }
 
-    container.innerHTML = dishesByCategory[category]
+    container.innerHTML = filterConfig[category]
+      .map(
+        (filter) => `
+          <button
+            class="filter-bar__button ${activeFilters[category] === filter.kind ? "active" : ""}"
+            type="button"
+            data-kind="${filter.kind}"
+            data-filter-category="${category}"
+          >
+            ${filter.label}
+          </button>
+        `
+      )
+      .join("");
+  });
+}
+
+function renderAllCategories() {
+  CATEGORY_ORDER.forEach((category) => {
+    const container = document.querySelector(`.dish-grid[data-category="${category}"]`);
+
+    if (!container) {
+      return;
+    }
+
+    const filterKind = activeFilters[category];
+    const visibleDishes = dishesByCategory[category].filter((dish) => !filterKind || dish.kind === filterKind);
+
+    container.innerHTML = visibleDishes
       .map(
         (dish) => `
-          <div class="dish-card" data-dish="${dish.keyword}" data-category="${dish.category}">
+          <div class="dish-card ${selection[category]?.keyword === dish.keyword ? "dish-card--selected" : ""}" data-dish="${dish.keyword}" data-category="${dish.category}">
             <img src="${dish.image}" alt="${dish.name}" class="dish-card__image">
             <p class="dish-card__price">${dish.price} ₽</p>
             <p class="dish-card__name">${dish.name}</p>
@@ -62,10 +136,12 @@ function renderAllCategories() {
   });
 }
 
-function bindCardSelection() {
-  document.querySelectorAll(".dish-card__button").forEach((button) => {
-    button.addEventListener("click", (event) => {
-      const card = event.currentTarget.closest(".dish-card");
+function bindInteractions() {
+  document.addEventListener("click", (event) => {
+    const cardButton = event.target.closest(".dish-card__button");
+
+    if (cardButton) {
+      const card = cardButton.closest(".dish-card");
 
       if (!card) {
         return;
@@ -80,19 +156,22 @@ function bindCardSelection() {
       }
 
       selection[category] = dish;
-      updateHighlightedCards();
+      renderAllCategories();
       updateSummary();
-    });
-  });
-}
+      return;
+    }
 
-function updateHighlightedCards() {
-  document.querySelectorAll(".dish-card").forEach((card) => {
-    const { dish, category } = card.dataset;
-    const selectedDish = selection[category];
-    const isSelected = selectedDish?.keyword === dish;
+    const filterButton = event.target.closest(".filter-bar__button");
 
-    card.classList.toggle("dish-card--selected", isSelected);
+    if (!filterButton) {
+      return;
+    }
+
+    const category = filterButton.dataset.filterCategory;
+    const kind = filterButton.dataset.kind;
+    activeFilters[category] = activeFilters[category] === kind ? null : kind;
+    renderAllFilters();
+    renderAllCategories();
   });
 }
 
@@ -158,9 +237,11 @@ function bindFormReset() {
     window.setTimeout(() => {
       CATEGORY_ORDER.forEach((category) => {
         selection[category] = null;
+        activeFilters[category] = null;
       });
 
-      updateHighlightedCards();
+      renderAllFilters();
+      renderAllCategories();
       updateSummary();
     }, 0);
   });
@@ -176,6 +257,5 @@ function applyDemoPreset() {
   CATEGORY_ORDER.forEach((category) => {
     selection[category] = dishesByCategory[category][0] ?? null;
   });
-
-  updateHighlightedCards();
+  renderAllCategories();
 }
