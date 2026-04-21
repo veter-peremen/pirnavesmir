@@ -68,6 +68,14 @@ const activeFilters = {
   dessert: null
 };
 
+const comboVariants = [
+  ["soup", "main-course", "salad", "drink"],
+  ["soup", "main-course", "drink"],
+  ["soup", "salad", "drink"],
+  ["main-course", "salad", "drink"],
+  ["main-course", "drink"]
+];
+
 const dishesByCategory = CATEGORY_ORDER.reduce((acc, category) => {
   acc[category] = localDishes
     .filter((dish) => dish.category === category)
@@ -80,6 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderAllCategories();
   bindInteractions();
   bindFormReset();
+  bindFormValidation();
   applyDemoPreset();
   updateSummary();
 });
@@ -247,8 +256,119 @@ function bindFormReset() {
   });
 }
 
+function bindFormValidation() {
+  const form = document.querySelector("#lunch-order-form");
+
+  if (!form) {
+    return;
+  }
+
+  form.addEventListener("submit", (event) => {
+    const validation = validateSelection();
+
+    if (validation.valid) {
+      return;
+    }
+
+    event.preventDefault();
+    showNotice(validation.message);
+  });
+}
+
+function validateSelection() {
+  const selectedCategories = CATEGORY_ORDER.filter((category) => category !== "dessert" && selection[category]).sort();
+
+  if (selectedCategories.length === 0) {
+    return {
+      valid: false,
+      message: "Ничего не выбрано. Выберите блюда для заказа"
+    };
+  }
+
+  const isValidCombo = comboVariants.some((variant) => hasSameCategories(variant, selectedCategories));
+
+  if (isValidCombo) {
+    return {
+      valid: true,
+      message: ""
+    };
+  }
+
+  const possibleCombos = comboVariants
+    .filter((variant) => selectedCategories.every((category) => variant.includes(category)))
+    .sort((a, b) => a.length - b.length);
+
+  const closestCombo = possibleCombos[0];
+
+  if (!closestCombo) {
+    return {
+      valid: false,
+      message: "Состав заказа не подходит под доступные комбо. Измените набор блюд"
+    };
+  }
+
+  const missingCategories = closestCombo.filter((category) => !selectedCategories.includes(category));
+
+  return {
+    valid: false,
+    message: formatMissingMessage(missingCategories)
+  };
+}
+
+function hasSameCategories(combo, selectedCategories) {
+  return combo.length === selectedCategories.length && combo.every((category) => selectedCategories.includes(category));
+}
+
+function formatMissingMessage(missingCategories) {
+  const labels = {
+    soup: "суп",
+    "main-course": "главное блюдо",
+    salad: "салат или стартер",
+    drink: "напиток"
+  };
+
+  const translated = missingCategories.map((category) => labels[category]);
+
+  if (translated.length === 1) {
+    return `Добавьте ${translated[0]}, чтобы оформить заказ`;
+  }
+
+  if (translated.length === 2) {
+    return `Добавьте ${translated[0]} и ${translated[1]}, чтобы собрать допустимое комбо`;
+  }
+
+  return `Добавьте ${translated.slice(0, -1).join(", ")} и ${translated.at(-1)}, чтобы собрать допустимое комбо`;
+}
+
+function showNotice(message) {
+  const layer = document.querySelector("#notice-layer");
+
+  if (!layer) {
+    return;
+  }
+
+  layer.innerHTML = `
+    <div class="notice-card" role="dialog" aria-modal="true">
+      <p class="notice-card__text">${message}</p>
+      <button class="notice-card__button" type="button">Окей</button>
+    </div>
+  `;
+  layer.classList.add("notice-layer--visible");
+
+  const closeButton = layer.querySelector(".notice-card__button");
+  closeButton?.addEventListener("click", () => {
+    layer.classList.remove("notice-layer--visible");
+    layer.innerHTML = "";
+  }, { once: true });
+}
+
 function applyDemoPreset() {
   const params = new URLSearchParams(window.location.search);
+
+  if (params.get("demo") === "notice") {
+    showNotice("Ничего не выбрано. Выберите блюда для заказа");
+    return;
+  }
 
   if (params.get("demo") !== "selected") {
     return;
