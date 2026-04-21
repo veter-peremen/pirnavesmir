@@ -1,4 +1,4 @@
-export const localDishes = [
+export const fallbackDishes = [
   {
     keyword: "borscht",
     name: "Борщ с пампушками",

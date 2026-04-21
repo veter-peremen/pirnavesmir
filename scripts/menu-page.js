@@ -1,4 +1,4 @@
-import { localDishes } from "./data/local-dishes.js";
+import { loadDishes } from "./api.js";
 
 const CATEGORY_ORDER = ["soup", "main-course", "salad", "drink", "dessert"];
 
@@ -76,14 +76,10 @@ const comboVariants = [
   ["main-course", "drink"]
 ];
 
-const dishesByCategory = CATEGORY_ORDER.reduce((acc, category) => {
-  acc[category] = localDishes
-    .filter((dish) => dish.category === category)
-    .sort((a, b) => a.name.localeCompare(b.name, "ru"));
-  return acc;
-}, {});
+let dishesByCategory = {};
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  await initializeDishes();
   renderAllFilters();
   renderAllCategories();
   bindInteractions();
@@ -92,6 +88,28 @@ document.addEventListener("DOMContentLoaded", () => {
   applyDemoPreset();
   updateSummary();
 });
+
+async function initializeDishes() {
+  const result = await loadDishes();
+
+  dishesByCategory = CATEGORY_ORDER.reduce((acc, category) => {
+    acc[category] = result.dishes
+      .filter((dish) => dish.category === category)
+      .sort((a, b) => a.name.localeCompare(b.name, "ru"));
+    return acc;
+  }, {});
+
+  const statusNode = document.querySelector("#menu-data-status");
+
+  if (!statusNode) {
+    return;
+  }
+
+  statusNode.textContent = result.source === "remote"
+    ? "Меню загружено с учебного API."
+    : "Сервер меню недоступен. Показан локальный резервный набор блюд.";
+  statusNode.classList.toggle("menu-data-status--fallback", result.source !== "remote");
+}
 
 function renderAllFilters() {
   CATEGORY_ORDER.forEach((category) => {
