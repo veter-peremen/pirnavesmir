@@ -74,6 +74,15 @@
   transform: translateY(-2px);
 }
 
+.dish-card--selected {
+  border-color: var(--accent);
+}
+
+.dish-card--selected .dish-card__button {
+  color: #ffffff;
+  background-color: var(--accent);
+}
+
 .dish-card:hover .dish-card__button {
   color: #ffffff;
   background-color: var(--accent);
@@ -174,6 +183,59 @@
 .field__control--textarea {
   min-height: 170px;
   resize: vertical;
+}
+
+.order-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.order-summary__empty {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.order-summary__row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 16px;
+  border: 1px solid rgba(35, 24, 18, 0.08);
+  border-radius: 16px;
+  background-color: rgba(255, 255, 255, 0.72);
+}
+
+.order-summary__label {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.order-summary__value {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: baseline;
+}
+
+.order-summary__value strong {
+  font-size: 1.02rem;
+}
+
+.order-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background-color: rgba(163, 52, 31, 0.08);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.is-hidden {
+  display: none;
 }
 
 .field__note {

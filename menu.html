@@ -45,127 +45,38 @@
 
       <section class="menu-section" id="soups" aria-labelledby="soups-title">
         <h2 id="soups-title" class="menu-section__title">Выберите суп</h2>
-        <div class="dish-grid">
-          <div class="dish-card">
-            <img src="assets/images/menu/borscht.svg" alt="Борщ с пампушками" class="dish-card__image">
-            <p class="dish-card__price">320 ₽</p>
-            <p class="dish-card__name">Борщ с пампушками</p>
-            <p class="dish-card__meta">420 г</p>
-            <button class="dish-card__button" type="button">Добавить</button>
-          </div>
-
-          <div class="dish-card">
-            <img src="assets/images/menu/shchi.svg" alt="Щи с белыми грибами" class="dish-card__image">
-            <p class="dish-card__price">290 ₽</p>
-            <p class="dish-card__name">Щи с белыми грибами</p>
-            <p class="dish-card__meta">400 г</p>
-            <button class="dish-card__button" type="button">Добавить</button>
-          </div>
-
-          <div class="dish-card">
-            <img src="assets/images/menu/ukha.svg" alt="Уха с судаком и укропом" class="dish-card__image">
-            <p class="dish-card__price">340 ₽</p>
-            <p class="dish-card__name">Уха с судаком и укропом</p>
-            <p class="dish-card__meta">390 г</p>
-            <button class="dish-card__button" type="button">Добавить</button>
-          </div>
-        </div>
+        <div class="dish-grid" data-category="soup"></div>
       </section>
 
       <section class="menu-section" id="mains" aria-labelledby="mains-title">
         <h2 id="mains-title" class="menu-section__title">Выберите главное блюдо</h2>
-        <div class="dish-grid">
-          <div class="dish-card">
-            <img src="assets/images/menu/pozharsky.svg" alt="Пожарская котлета с картофелем" class="dish-card__image">
-            <p class="dish-card__price">390 ₽</p>
-            <p class="dish-card__name">Пожарская котлета с картофелем</p>
-            <p class="dish-card__meta">310 г</p>
-            <button class="dish-card__button" type="button">Добавить</button>
-          </div>
-
-          <div class="dish-card">
-            <img src="assets/images/menu/vareniki.svg" alt="Вареники с картофелем и грибами" class="dish-card__image">
-            <p class="dish-card__price">280 ₽</p>
-            <p class="dish-card__name">Вареники с картофелем и грибами</p>
-            <p class="dish-card__meta">280 г</p>
-            <button class="dish-card__button" type="button">Добавить</button>
-          </div>
-
-          <div class="dish-card">
-            <img src="assets/images/menu/draniki.svg" alt="Драники со сметаной и луком" class="dish-card__image">
-            <p class="dish-card__price">310 ₽</p>
-            <p class="dish-card__name">Драники со сметаной и луком</p>
-            <p class="dish-card__meta">260 г</p>
-            <button class="dish-card__button" type="button">Добавить</button>
-          </div>
-        </div>
+        <div class="dish-grid" data-category="main-course"></div>
       </section>
 
       <section class="menu-section" id="drinks" aria-labelledby="drinks-title">
         <h2 id="drinks-title" class="menu-section__title">Выберите напиток</h2>
-        <div class="dish-grid">
-          <div class="dish-card">
-            <img src="assets/images/menu/mors.svg" alt="Клюквенный морс" class="dish-card__image">
-            <p class="dish-card__price">140 ₽</p>
-            <p class="dish-card__name">Клюквенный морс</p>
-            <p class="dish-card__meta">300 мл</p>
-            <button class="dish-card__button" type="button">Добавить</button>
-          </div>
-
-          <div class="dish-card">
-            <img src="assets/images/menu/vzvar.svg" alt="Яблочный взвар" class="dish-card__image">
-            <p class="dish-card__price">130 ₽</p>
-            <p class="dish-card__name">Яблочный взвар</p>
-            <p class="dish-card__meta">300 мл</p>
-            <button class="dish-card__button" type="button">Добавить</button>
-          </div>
-
-          <div class="dish-card">
-            <img src="assets/images/menu/kissel.svg" alt="Облепиховый кисель" class="dish-card__image">
-            <p class="dish-card__price">150 ₽</p>
-            <p class="dish-card__name">Облепиховый кисель</p>
-            <p class="dish-card__meta">280 мл</p>
-            <button class="dish-card__button" type="button">Добавить</button>
-          </div>
-        </div>
+        <div class="dish-grid" data-category="drink"></div>
       </section>
 
       <section class="section order-builder" aria-labelledby="order-builder-title">
         <h2 id="order-builder-title" class="section-title">Сделать заказ</h2>
-        <form class="order-form" action="https://httpbin.org/post" method="post">
+        <form class="order-form" action="https://httpbin.org/post" method="post" id="lunch-order-form">
           <div class="order-form__group">
             <div class="order-form__panel">
               <h3 class="order-form__title">Ваш заказ</h3>
 
-              <label class="field">
-                <span class="field__label">Суп</span>
-                <select class="field__control" name="soup">
-                  <option value="">-- Выберите суп --</option>
-                  <option value="borscht">Борщ с пампушками</option>
-                  <option value="shchi">Щи с белыми грибами</option>
-                  <option value="ukha">Уха с судаком и укропом</option>
-                </select>
-              </label>
+              <div class="order-summary" id="order-summary">
+                <p class="order-summary__empty">Ничего не выбрано</p>
+              </div>
 
-              <label class="field">
-                <span class="field__label">Главное блюдо</span>
-                <select class="field__control" name="main_course">
-                  <option value="">-- Выберите главное блюдо --</option>
-                  <option value="pozharsky">Пожарская котлета с картофелем</option>
-                  <option value="vareniki">Вареники с картофелем и грибами</option>
-                  <option value="draniki">Драники со сметаной и луком</option>
-                </select>
-              </label>
+              <div class="order-total is-hidden" id="order-total">
+                <span>Стоимость заказа</span>
+                <strong id="order-total-value">0 ₽</strong>
+              </div>
 
-              <label class="field">
-                <span class="field__label">Напиток</span>
-                <select class="field__control" name="drink">
-                  <option value="">-- Выберите напиток --</option>
-                  <option value="mors">Клюквенный морс</option>
-                  <option value="vzvar">Яблочный взвар</option>
-                  <option value="kissel">Облепиховый кисель</option>
-                </select>
-              </label>
+              <input type="hidden" name="soup" id="order-field-soup">
+              <input type="hidden" name="main-course" id="order-field-main-course">
+              <input type="hidden" name="drink" id="order-field-drink">
 
               <label class="field">
                 <span class="field__label">Комментарии к заказу</span>
@@ -238,5 +149,7 @@
       <p>Готовим в Москве, ул. Хлебная, 8.</p>
     </div>
   </footer>
+
+  <script type="module" src="scripts/menu-page.js"></script>
 </body>
 </html>
