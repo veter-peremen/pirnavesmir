@@ -1,7 +1,4 @@
-import { loadDishes } from "./api.js";
-import { CATEGORY_ORDER, filterConfig } from "./catalog-config.js";
-import { buildCategoryMap, buildSelectionFromKeywords, calculateTotal, renderSummaryRows, selectionToStoredKeywords, validateSelection } from "./order-utils.js";
-import { loadStoredKeywords, saveStoredKeywords } from "./selection-storage.js";
+const app = window.PirApp ??= {};
 
 let dishesByCategory = {};
 let selection = {};
@@ -24,9 +21,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 async function initializeDishes() {
-  const result = await loadDishes();
-  dishesByCategory = buildCategoryMap(result.dishes);
-  selection = buildSelectionFromKeywords(loadStoredKeywords(), dishesByCategory);
+  const result = await app.loadDishes();
+  dishesByCategory = app.buildCategoryMap(result.dishes);
+  selection = app.buildSelectionFromKeywords(app.loadStoredKeywords(), dishesByCategory);
 
   const statusNode = document.querySelector("#menu-data-status");
 
@@ -39,14 +36,14 @@ async function initializeDishes() {
 }
 
 function renderAllFilters() {
-  CATEGORY_ORDER.forEach((category) => {
+  app.CATEGORY_ORDER.forEach((category) => {
     const container = document.querySelector(`.filter-bar[data-category="${category}"]`);
 
     if (!container) {
       return;
     }
 
-    container.innerHTML = filterConfig[category]
+    container.innerHTML = app.filterConfig[category]
       .map(
         (filter) => `
           <button
@@ -64,7 +61,7 @@ function renderAllFilters() {
 }
 
 function renderAllCategories() {
-  CATEGORY_ORDER.forEach((category) => {
+  app.CATEGORY_ORDER.forEach((category) => {
     const container = document.querySelector(`.dish-grid[data-category="${category}"]`);
 
     if (!container) {
@@ -114,7 +111,7 @@ function bindInteractions() {
       }
 
       selection[category] = dish;
-      saveStoredKeywords(selectionToStoredKeywords(selection));
+      app.saveStoredKeywords(app.selectionToStoredKeywords(selection));
       renderAllCategories();
       updateCheckoutPanel();
       return;
@@ -138,7 +135,7 @@ function bindInteractions() {
     }
 
     event.preventDefault();
-    showNotice(validateSelection(selection).message);
+    showNotice(app.validateSelection(selection).message);
   });
 }
 
@@ -148,20 +145,20 @@ function updateCheckoutPanel() {
   const totalNode = document.querySelector("#checkout-panel-total");
   const link = document.querySelector("#checkout-link");
   const helper = document.querySelector("#checkout-panel-helper");
-  const hasSelection = CATEGORY_ORDER.some((category) => Boolean(selection[category]));
+  const hasSelection = app.CATEGORY_ORDER.some((category) => Boolean(selection[category]));
 
   panel?.classList.toggle("is-hidden", !hasSelection);
   if (summaryNode) {
-    summaryNode.innerHTML = renderSummaryRows(selection);
+    summaryNode.innerHTML = app.renderSummaryRows(selection);
   }
 
   if (!hasSelection || !totalNode || !link || !helper) {
     return;
   }
 
-  totalNode.textContent = `${calculateTotal(selection)} ₽`;
+  totalNode.textContent = `${app.calculateTotal(selection)} ₽`;
 
-  const validation = validateSelection(selection);
+  const validation = app.validateSelection(selection);
   const isEnabled = validation.valid;
 
   link.classList.toggle("checkout-panel__link--disabled", !isEnabled);
@@ -183,10 +180,10 @@ function applyDemoPreset() {
     return;
   }
 
-  CATEGORY_ORDER.forEach((category) => {
+  app.CATEGORY_ORDER.forEach((category) => {
     selection[category] = dishesByCategory[category][0] ?? null;
   });
-  saveStoredKeywords(selectionToStoredKeywords(selection));
+  app.saveStoredKeywords(app.selectionToStoredKeywords(selection));
   renderAllCategories();
 }
 

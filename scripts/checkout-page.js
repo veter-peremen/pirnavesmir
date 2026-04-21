@@ -1,8 +1,4 @@
-import { loadDishes } from "./api.js";
-import { CATEGORY_ORDER } from "./catalog-config.js";
-import { createOrder } from "./orders-api.js";
-import { buildCategoryMap, buildSelectionFromKeywords, calculateTotal, getSelectedDishes, renderSummaryRows, selectionToStoredKeywords, validateSelection } from "./order-utils.js";
-import { clearStoredKeywords, loadStoredKeywords, saveStoredKeywords } from "./selection-storage.js";
+const app = window.PirApp ??= {};
 
 let dishesByCategory = {};
 let selection = {};
@@ -15,9 +11,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 async function initializeCheckout() {
-  const result = await loadDishes();
-  dishesByCategory = buildCategoryMap(result.dishes);
-  selection = buildSelectionFromKeywords(loadStoredKeywords(), dishesByCategory);
+  const result = await app.loadDishes();
+  dishesByCategory = app.buildCategoryMap(result.dishes);
+  selection = app.buildSelectionFromKeywords(app.loadStoredKeywords(), dishesByCategory);
 
   const statusNode = document.querySelector("#checkout-data-status");
 
@@ -36,7 +32,7 @@ function bindInteractions() {
     if (removeButton) {
       const category = removeButton.dataset.category;
       selection[category] = null;
-      saveStoredKeywords(selectionToStoredKeywords(selection));
+      app.saveStoredKeywords(app.selectionToStoredKeywords(selection));
       renderCheckout();
       return;
     }
@@ -63,7 +59,7 @@ function bindInteractions() {
   form?.addEventListener("submit", async (event) => {
     event.preventDefault();
 
-    const validation = validateSelection(selection);
+    const validation = app.validateSelection(selection);
 
     if (!validation.valid) {
       showNotice(validation.message);
@@ -80,14 +76,14 @@ function bindInteractions() {
       delivery_time: String(formData.get("delivery_time") ?? ""),
       comment: String(formData.get("comment") ?? ""),
       subscribe: formData.get("subscribe") === "yes",
-      total: calculateTotal(selection),
-      selection: structuredClone(selection)
+      total: app.calculateTotal(selection),
+      selection: cloneSelection(selection)
     };
 
     try {
-      const result = await createOrder(payload);
-      clearStoredKeywords();
-      selection = CATEGORY_ORDER.reduce((acc, category) => {
+      const result = await app.createOrder(payload);
+      app.clearStoredKeywords();
+      selection = app.CATEGORY_ORDER.reduce((acc, category) => {
         acc[category] = null;
         return acc;
       }, {});
@@ -113,7 +109,7 @@ function renderCheckout() {
 function renderSelectedDishes() {
   const grid = document.querySelector("#checkout-dish-grid");
   const empty = document.querySelector("#checkout-empty");
-  const selectedDishes = getSelectedDishes(selection);
+  const selectedDishes = app.getSelectedDishes(selection);
 
   if (!grid || !empty) {
     return;
@@ -143,8 +139,8 @@ function renderSummary() {
     return;
   }
 
-  summary.innerHTML = renderSummaryRows(selection);
-  total.textContent = `${calculateTotal(selection)} ₽`;
+  summary.innerHTML = app.renderSummaryRows(selection);
+  total.textContent = `${app.calculateTotal(selection)} ₽`;
 }
 
 function applyDemoPreset() {
@@ -154,10 +150,10 @@ function applyDemoPreset() {
     return;
   }
 
-  CATEGORY_ORDER.forEach((category) => {
+  app.CATEGORY_ORDER.forEach((category) => {
     selection[category] = dishesByCategory[category][0] ?? null;
   });
-  saveStoredKeywords(selectionToStoredKeywords(selection));
+  app.saveStoredKeywords(app.selectionToStoredKeywords(selection));
 }
 
 function showNotice(message, options = {}) {
@@ -174,4 +170,8 @@ function showNotice(message, options = {}) {
     </div>
   `;
   layer.classList.add("notice-layer--visible");
+}
+
+function cloneSelection(value) {
+  return JSON.parse(JSON.stringify(value));
 }

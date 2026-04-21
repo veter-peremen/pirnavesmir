@@ -1,7 +1,8 @@
-import { CATEGORY_ORDER, comboVariants, summaryConfig } from "./catalog-config.js";
+(() => {
+const app = window.PirApp ??= {};
 
-export function buildCategoryMap(dishes) {
-  return CATEGORY_ORDER.reduce((acc, category) => {
+function buildCategoryMap(dishes) {
+  return app.CATEGORY_ORDER.reduce((acc, category) => {
     acc[category] = dishes
       .filter((dish) => dish.category === category)
       .sort((a, b) => a.name.localeCompare(b.name, "ru"));
@@ -9,29 +10,29 @@ export function buildCategoryMap(dishes) {
   }, {});
 }
 
-export function buildSelectionFromKeywords(keywords, dishesByCategory) {
-  return CATEGORY_ORDER.reduce((acc, category) => {
+function buildSelectionFromKeywords(keywords, dishesByCategory) {
+  return app.CATEGORY_ORDER.reduce((acc, category) => {
     const keyword = keywords?.[category];
     acc[category] = keyword ? dishesByCategory[category].find((dish) => dish.keyword === keyword) ?? null : null;
     return acc;
   }, {});
 }
 
-export function selectionToStoredKeywords(selection) {
-  return CATEGORY_ORDER.reduce((acc, category) => {
+function selectionToStoredKeywords(selection) {
+  return app.CATEGORY_ORDER.reduce((acc, category) => {
     acc[category] = selection[category]?.keyword ?? "";
     return acc;
   }, {});
 }
 
-export function calculateTotal(selection) {
-  return CATEGORY_ORDER.reduce((total, category) => total + (selection[category]?.price ?? 0), 0);
+function calculateTotal(selection) {
+  return app.CATEGORY_ORDER.reduce((total, category) => total + (selection[category]?.price ?? 0), 0);
 }
 
-export function renderSummaryRows(selection) {
-  return CATEGORY_ORDER.map((category) => {
+function renderSummaryRows(selection) {
+  return app.CATEGORY_ORDER.map((category) => {
     const item = selection[category];
-    const config = summaryConfig[category];
+    const config = app.summaryConfig[category];
 
     if (!item) {
       return `
@@ -56,8 +57,8 @@ export function renderSummaryRows(selection) {
   }).join("");
 }
 
-export function validateSelection(selection) {
-  const selectedCategories = CATEGORY_ORDER.filter((category) => category !== "dessert" && selection[category]).sort();
+function validateSelection(selection) {
+  const selectedCategories = app.CATEGORY_ORDER.filter((category) => category !== "dessert" && selection[category]).sort();
 
   if (selectedCategories.length === 0) {
     return {
@@ -66,7 +67,7 @@ export function validateSelection(selection) {
     };
   }
 
-  const isValidCombo = comboVariants.some((variant) => hasSameCategories(variant, selectedCategories));
+  const isValidCombo = app.comboVariants.some((variant) => hasSameCategories(variant, selectedCategories));
 
   if (isValidCombo) {
     return {
@@ -75,7 +76,7 @@ export function validateSelection(selection) {
     };
   }
 
-  const possibleCombos = comboVariants
+  const possibleCombos = app.comboVariants
     .filter((variant) => selectedCategories.every((category) => variant.includes(category)))
     .sort((a, b) => a.length - b.length);
 
@@ -96,8 +97,8 @@ export function validateSelection(selection) {
   };
 }
 
-export function getSelectedDishes(selection) {
-  return CATEGORY_ORDER.filter((category) => Boolean(selection[category])).map((category) => selection[category]);
+function getSelectedDishes(selection) {
+  return app.CATEGORY_ORDER.filter((category) => Boolean(selection[category])).map((category) => selection[category]);
 }
 
 function hasSameCategories(combo, selectedCategories) {
@@ -122,5 +123,14 @@ function formatMissingMessage(missingCategories) {
     return `Добавьте ${translated[0]} и ${translated[1]}, чтобы собрать допустимое комбо`;
   }
 
-  return `Добавьте ${translated.slice(0, -1).join(", ")} и ${translated.at(-1)}, чтобы собрать допустимое комбо`;
+  return `Добавьте ${translated.slice(0, -1).join(", ")} и ${translated[translated.length - 1]}, чтобы собрать допустимое комбо`;
 }
+
+app.buildCategoryMap = buildCategoryMap;
+app.buildSelectionFromKeywords = buildSelectionFromKeywords;
+app.selectionToStoredKeywords = selectionToStoredKeywords;
+app.calculateTotal = calculateTotal;
+app.renderSummaryRows = renderSummaryRows;
+app.validateSelection = validateSelection;
+app.getSelectedDishes = getSelectedDishes;
+})();

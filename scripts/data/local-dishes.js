@@ -1,4 +1,7 @@
-export const fallbackDishes = [
+(() => {
+const app = window.PirApp ??= {};
+
+app.fallbackDishes = [
   {
     keyword: "borscht",
     name: "Борщ с пампушками",
@@ -270,3 +273,4 @@ export const fallbackDishes = [
     image: "assets/images/menu/medovik.svg"
   }
 ];
+})();

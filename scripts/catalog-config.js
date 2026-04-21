@@ -1,6 +1,9 @@
-export const CATEGORY_ORDER = ["soup", "main-course", "salad", "drink", "dessert"];
+(() => {
+const app = window.PirApp ??= {};
 
-export const filterConfig = {
+app.CATEGORY_ORDER = ["soup", "main-course", "salad", "drink", "dessert"];
+
+app.filterConfig = {
   soup: [
     { kind: "fish", label: "рыбный" },
     { kind: "meat", label: "мясной" },
@@ -27,7 +30,7 @@ export const filterConfig = {
   ]
 };
 
-export const summaryConfig = {
+app.summaryConfig = {
   soup: {
     title: "Суп",
     empty: "Суп не выбран"
@@ -50,10 +53,11 @@ export const summaryConfig = {
   }
 };
 
-export const comboVariants = [
+app.comboVariants = [
   ["soup", "main-course", "salad", "drink"],
   ["soup", "main-course", "drink"],
   ["soup", "salad", "drink"],
   ["main-course", "salad", "drink"],
   ["main-course", "drink"]
 ];
+})();

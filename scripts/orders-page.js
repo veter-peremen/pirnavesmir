@@ -1,7 +1,4 @@
-import { loadDishes } from "./api.js";
-import { CATEGORY_ORDER } from "./catalog-config.js";
-import { loadOrders, updateOrder, deleteOrder } from "./orders-api.js";
-import { buildCategoryMap, calculateTotal, getSelectedDishes } from "./order-utils.js";
+const app = window.PirApp ??= {};
 
 let dishesByCategory = {};
 let orders = [];
@@ -15,8 +12,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 async function initializePage() {
   try {
-    const [dishesResult, ordersResult] = await Promise.all([loadDishes(), loadOrders()]);
-    dishesByCategory = buildCategoryMap(dishesResult.dishes);
+    const [dishesResult, ordersResult] = await Promise.all([app.loadDishes(), app.loadOrders()]);
+    dishesByCategory = app.buildCategoryMap(dishesResult.dishes);
     ordersSource = ordersResult.source;
     orders = ordersResult.orders
       .map((order) => normalizeOrder(order))
@@ -92,7 +89,7 @@ function bindInteractions() {
     const orderId = confirmDelete.dataset.confirmDelete;
 
     try {
-      await deleteOrder(orderId);
+      await app.deleteOrder(orderId);
       orders = orders.filter((item) => String(item.id) !== String(orderId));
       closeModal();
       updateStatusText("Заказ удален из истории.");
@@ -124,7 +121,7 @@ function bindInteractions() {
     };
 
     try {
-      const result = await updateOrder(orderId, patch);
+      const result = await app.updateOrder(orderId, patch);
       orders = orders.map((order) => {
         if (String(order.id) !== String(orderId)) {
           return order;
@@ -344,7 +341,7 @@ function closeModal() {
 }
 
 function normalizeOrder(order) {
-  const selection = CATEGORY_ORDER.reduce((acc, category) => {
+  const selection = app.CATEGORY_ORDER.reduce((acc, category) => {
     acc[category] = resolveDish(order, category);
     return acc;
   }, {});
@@ -360,7 +357,7 @@ function normalizeOrder(order) {
     delivery_type: order.delivery_type ?? order.deliveryType ?? "asap",
     delivery_time: order.delivery_time ?? order.deliveryTime ?? "",
     comment: order.comment ?? "",
-    total: Number(order.total) || calculateTotal(selection),
+    total: Number(order.total) || app.calculateTotal(selection),
     selection
   };
 }
@@ -406,7 +403,7 @@ function readOrderKeyword(order, category) {
 }
 
 function renderDishTags(order) {
-  const dishes = getSelectedDishes(order.selection);
+  const dishes = app.getSelectedDishes(order.selection);
 
   if (dishes.length === 0) {
     return '<li class="order-card__dish">Состав заказа не указан</li>';
@@ -418,7 +415,7 @@ function renderDishTags(order) {
 }
 
 function renderDishItems(order) {
-  const dishes = getSelectedDishes(order.selection);
+  const dishes = app.getSelectedDishes(order.selection);
 
   if (dishes.length === 0) {
     return "<li>Состав заказа не указан</li>";

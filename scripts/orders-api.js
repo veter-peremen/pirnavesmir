@@ -1,15 +1,15 @@
-import { appConfig } from "./config.js";
-import { createMockOrder, deleteMockOrder, loadMockOrders, updateMockOrder } from "./selection-storage.js";
+(() => {
+const app = window.PirApp ??= {};
 
-export async function createOrder(payload) {
-  if (!appConfig.apiKey) {
+async function createOrder(payload) {
+  if (!app.appConfig.apiKey) {
     return {
       source: "mock",
-      order: createMockOrder(payload)
+      order: app.createMockOrder(payload)
     };
   }
 
-  const response = await fetch(`${appConfig.ordersApiUrl}?api_key=${encodeURIComponent(appConfig.apiKey)}`, {
+  const response = await fetch(`${app.appConfig.ordersApiUrl}?api_key=${encodeURIComponent(app.appConfig.apiKey)}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -27,15 +27,15 @@ export async function createOrder(payload) {
   };
 }
 
-export async function loadOrders() {
-  if (!appConfig.apiKey) {
+async function loadOrders() {
+  if (!app.appConfig.apiKey) {
     return {
       source: "mock",
-      orders: loadMockOrders()
+      orders: app.loadMockOrders()
     };
   }
 
-  const response = await fetch(`${appConfig.ordersApiUrl}?api_key=${encodeURIComponent(appConfig.apiKey)}`);
+  const response = await fetch(`${app.appConfig.ordersApiUrl}?api_key=${encodeURIComponent(app.appConfig.apiKey)}`);
 
   if (!response.ok) {
     throw new Error(`HTTP ${response.status}`);
@@ -47,15 +47,15 @@ export async function loadOrders() {
   };
 }
 
-export async function updateOrder(id, patch) {
-  if (!appConfig.apiKey) {
+async function updateOrder(id, patch) {
+  if (!app.appConfig.apiKey) {
     return {
       source: "mock",
-      order: updateMockOrder(id, patch)
+      order: app.updateMockOrder(id, patch)
     };
   }
 
-  const response = await fetch(`${appConfig.ordersApiUrl}/${id}?api_key=${encodeURIComponent(appConfig.apiKey)}`, {
+  const response = await fetch(`${app.appConfig.ordersApiUrl}/${id}?api_key=${encodeURIComponent(app.appConfig.apiKey)}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json"
@@ -73,15 +73,15 @@ export async function updateOrder(id, patch) {
   };
 }
 
-export async function deleteOrder(id) {
-  if (!appConfig.apiKey) {
-    deleteMockOrder(id);
+async function deleteOrder(id) {
+  if (!app.appConfig.apiKey) {
+    app.deleteMockOrder(id);
     return {
       source: "mock"
     };
   }
 
-  const response = await fetch(`${appConfig.ordersApiUrl}/${id}?api_key=${encodeURIComponent(appConfig.apiKey)}`, {
+  const response = await fetch(`${app.appConfig.ordersApiUrl}/${id}?api_key=${encodeURIComponent(app.appConfig.apiKey)}`, {
     method: "DELETE"
   });
 
@@ -111,3 +111,9 @@ function toRemotePayload(payload) {
     dessert: payload.selection.dessert?.keyword ?? ""
   };
 }
+
+app.createOrder = createOrder;
+app.loadOrders = loadOrders;
+app.updateOrder = updateOrder;
+app.deleteOrder = deleteOrder;
+})();

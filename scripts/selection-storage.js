@@ -1,16 +1,16 @@
-import { CATEGORY_ORDER } from "./catalog-config.js";
-
+(() => {
+const app = window.PirApp ??= {};
 const SELECTION_KEY = "pirnavesmir:selected-dishes";
 const MOCK_ORDERS_KEY = "pirnavesmir:mock-orders";
 
 function getDefaultKeywords() {
-  return CATEGORY_ORDER.reduce((acc, category) => {
+  return app.CATEGORY_ORDER.reduce((acc, category) => {
     acc[category] = "";
     return acc;
   }, {});
 }
 
-export function loadStoredKeywords() {
+function loadStoredKeywords() {
   try {
     const raw = localStorage.getItem(SELECTION_KEY);
 
@@ -25,15 +25,15 @@ export function loadStoredKeywords() {
   }
 }
 
-export function saveStoredKeywords(keywords) {
+function saveStoredKeywords(keywords) {
   localStorage.setItem(SELECTION_KEY, JSON.stringify({ ...getDefaultKeywords(), ...keywords }));
 }
 
-export function clearStoredKeywords() {
+function clearStoredKeywords() {
   localStorage.removeItem(SELECTION_KEY);
 }
 
-export function loadMockOrders() {
+function loadMockOrders() {
   try {
     return JSON.parse(localStorage.getItem(MOCK_ORDERS_KEY) ?? "[]");
   } catch {
@@ -41,11 +41,11 @@ export function loadMockOrders() {
   }
 }
 
-export function saveMockOrders(orders) {
+function saveMockOrders(orders) {
   localStorage.setItem(MOCK_ORDERS_KEY, JSON.stringify(orders));
 }
 
-export function createMockOrder(payload) {
+function createMockOrder(payload) {
   const orders = loadMockOrders();
   const id = globalThis.crypto?.randomUUID?.() ?? `${Date.now()}`;
   const order = {
@@ -57,14 +57,24 @@ export function createMockOrder(payload) {
   return order;
 }
 
-export function updateMockOrder(id, patch) {
+function updateMockOrder(id, patch) {
   const orders = loadMockOrders();
   const updatedOrders = orders.map((order) => (String(order.id) === String(id) ? { ...order, ...patch } : order));
   saveMockOrders(updatedOrders);
   return updatedOrders.find((order) => String(order.id) === String(id));
 }
 
-export function deleteMockOrder(id) {
+function deleteMockOrder(id) {
   const orders = loadMockOrders();
   saveMockOrders(orders.filter((order) => String(order.id) !== String(id)));
 }
+
+app.loadStoredKeywords = loadStoredKeywords;
+app.saveStoredKeywords = saveStoredKeywords;
+app.clearStoredKeywords = clearStoredKeywords;
+app.loadMockOrders = loadMockOrders;
+app.saveMockOrders = saveMockOrders;
+app.createMockOrder = createMockOrder;
+app.updateMockOrder = updateMockOrder;
+app.deleteMockOrder = deleteMockOrder;
+})();

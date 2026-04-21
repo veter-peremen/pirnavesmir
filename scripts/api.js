@@ -1,8 +1,8 @@
-import { fallbackDishes } from "./data/local-dishes.js";
-
+(() => {
+const app = window.PirApp ??= {};
 const DISHES_API_URL = "https://edu.std-900.ist.mospolytech.ru/labs/api/dishes";
 
-export async function loadDishes() {
+async function loadDishes() {
   try {
     const response = await fetch(DISHES_API_URL, { method: "GET" });
 
@@ -18,9 +18,12 @@ export async function loadDishes() {
     };
   } catch (error) {
     return {
-      dishes: fallbackDishes,
+      dishes: app.fallbackDishes,
       source: "fallback",
       error
     };
   }
 }
+
+app.loadDishes = loadDishes;
+})();
