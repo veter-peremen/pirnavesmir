@@ -1,64 +1,10 @@
 import { loadDishes } from "./api.js";
+import { CATEGORY_ORDER, filterConfig } from "./catalog-config.js";
+import { buildCategoryMap, buildSelectionFromKeywords, calculateTotal, renderSummaryRows, selectionToStoredKeywords, validateSelection } from "./order-utils.js";
+import { loadStoredKeywords, saveStoredKeywords } from "./selection-storage.js";
 
-const CATEGORY_ORDER = ["soup", "main-course", "salad", "drink", "dessert"];
-
-const filterConfig = {
-  soup: [
-    { kind: "fish", label: "рыбный" },
-    { kind: "meat", label: "мясной" },
-    { kind: "veg", label: "вегетарианский" }
-  ],
-  "main-course": [
-    { kind: "fish", label: "рыбное" },
-    { kind: "meat", label: "мясное" },
-    { kind: "veg", label: "вегетарианское" }
-  ],
-  salad: [
-    { kind: "fish", label: "рыбный" },
-    { kind: "meat", label: "мясной" },
-    { kind: "veg", label: "вегетарианский" }
-  ],
-  drink: [
-    { kind: "cold", label: "холодный" },
-    { kind: "hot", label: "горячий" }
-  ],
-  dessert: [
-    { kind: "small", label: "маленькая порция" },
-    { kind: "medium", label: "средняя порция" },
-    { kind: "large", label: "большая порция" }
-  ]
-};
-
-const summaryConfig = {
-  soup: {
-    title: "Суп",
-    empty: "Суп не выбран"
-  },
-  "main-course": {
-    title: "Главное блюдо",
-    empty: "Блюдо не выбрано"
-  },
-  salad: {
-    title: "Салат или стартер",
-    empty: "Блюдо не выбрано"
-  },
-  drink: {
-    title: "Напиток",
-    empty: "Напиток не выбран"
-  },
-  dessert: {
-    title: "Десерт",
-    empty: "Десерт не выбран"
-  }
-};
-
-const selection = {
-  soup: null,
-  "main-course": null,
-  salad: null,
-  drink: null,
-  dessert: null
-};
+let dishesByCategory = {};
+let selection = {};
 
 const activeFilters = {
   soup: null,
@@ -68,47 +14,28 @@ const activeFilters = {
   dessert: null
 };
 
-const comboVariants = [
-  ["soup", "main-course", "salad", "drink"],
-  ["soup", "main-course", "drink"],
-  ["soup", "salad", "drink"],
-  ["main-course", "salad", "drink"],
-  ["main-course", "drink"]
-];
-
-let dishesByCategory = {};
-
 document.addEventListener("DOMContentLoaded", async () => {
   await initializeDishes();
   renderAllFilters();
   renderAllCategories();
   bindInteractions();
-  bindFormReset();
-  bindFormValidation();
   applyDemoPreset();
-  updateSummary();
+  updateCheckoutPanel();
 });
 
 async function initializeDishes() {
   const result = await loadDishes();
-
-  dishesByCategory = CATEGORY_ORDER.reduce((acc, category) => {
-    acc[category] = result.dishes
-      .filter((dish) => dish.category === category)
-      .sort((a, b) => a.name.localeCompare(b.name, "ru"));
-    return acc;
-  }, {});
+  dishesByCategory = buildCategoryMap(result.dishes);
+  selection = buildSelectionFromKeywords(loadStoredKeywords(), dishesByCategory);
 
   const statusNode = document.querySelector("#menu-data-status");
 
-  if (!statusNode) {
-    return;
+  if (statusNode) {
+    statusNode.textContent = result.source === "remote"
+      ? "Меню загружено с учебного API."
+      : "Сервер меню недоступен. Показан локальный резервный набор блюд.";
+    statusNode.classList.toggle("menu-data-status--fallback", result.source !== "remote");
   }
-
-  statusNode.textContent = result.source === "remote"
-    ? "Меню загружено с учебного API."
-    : "Сервер меню недоступен. Показан локальный резервный набор блюд.";
-  statusNode.classList.toggle("menu-data-status--fallback", result.source !== "remote");
 }
 
 function renderAllFilters() {
@@ -149,15 +76,19 @@ function renderAllCategories() {
 
     container.innerHTML = visibleDishes
       .map(
-        (dish) => `
-          <div class="dish-card ${selection[category]?.keyword === dish.keyword ? "dish-card--selected" : ""}" data-dish="${dish.keyword}" data-category="${dish.category}">
+        (dish) => {
+          const isSelected = selection[category]?.keyword === dish.keyword;
+
+          return `
+          <div class="dish-card ${isSelected ? "dish-card--selected" : ""}" data-dish="${dish.keyword}" data-category="${dish.category}">
             <img src="${dish.image}" alt="${dish.name}" class="dish-card__image">
             <p class="dish-card__price">${dish.price} ₽</p>
             <p class="dish-card__name">${dish.name}</p>
             <p class="dish-card__meta">${dish.count}</p>
-            <button class="dish-card__button" type="button">Добавить</button>
+            <button class="dish-card__button" type="button">${isSelected ? "Выбрано" : "Добавить"}</button>
           </div>
-        `
+        `;
+        }
       )
       .join("");
   });
@@ -183,179 +114,80 @@ function bindInteractions() {
       }
 
       selection[category] = dish;
+      saveStoredKeywords(selectionToStoredKeywords(selection));
       renderAllCategories();
-      updateSummary();
+      updateCheckoutPanel();
       return;
     }
 
     const filterButton = event.target.closest(".filter-bar__button");
 
-    if (!filterButton) {
+    if (filterButton) {
+      const category = filterButton.dataset.filterCategory;
+      const kind = filterButton.dataset.kind;
+      activeFilters[category] = activeFilters[category] === kind ? null : kind;
+      renderAllFilters();
+      renderAllCategories();
       return;
     }
 
-    const category = filterButton.dataset.filterCategory;
-    const kind = filterButton.dataset.kind;
-    activeFilters[category] = activeFilters[category] === kind ? null : kind;
-    renderAllFilters();
-    renderAllCategories();
-  });
-}
+    const checkoutLink = event.target.closest("#checkout-link");
 
-function updateSummary() {
-  const summaryNode = document.querySelector("#order-summary");
-  const totalNode = document.querySelector("#order-total");
-  const totalValueNode = document.querySelector("#order-total-value");
-  const hasSelection = CATEGORY_ORDER.some((category) => Boolean(selection[category]));
-
-  summaryNode.innerHTML = hasSelection ? renderSummaryRows() : `<p class="order-summary__empty">Ничего не выбрано</p>`;
-  totalNode.classList.toggle("is-hidden", !hasSelection);
-  totalValueNode.textContent = `${getTotal()} ₽`;
-
-  CATEGORY_ORDER.forEach((category) => {
-    const field = document.querySelector(`#order-field-${category}`);
-
-    if (field) {
-      field.value = selection[category]?.keyword ?? "";
-    }
-  });
-}
-
-function renderSummaryRows() {
-  return CATEGORY_ORDER.map((category) => {
-    const item = selection[category];
-    const config = summaryConfig[category];
-
-    if (!item) {
-      return `
-        <div class="order-summary__row">
-          <span class="order-summary__label">${config.title}</span>
-          <div class="order-summary__value">
-            <strong>${config.empty}</strong>
-          </div>
-        </div>
-      `;
-    }
-
-    return `
-      <div class="order-summary__row">
-        <span class="order-summary__label">${config.title}</span>
-        <div class="order-summary__value">
-          <strong>${item.name}</strong>
-          <span>${item.price} ₽</span>
-        </div>
-      </div>
-    `;
-  }).join("");
-}
-
-function getTotal() {
-  return CATEGORY_ORDER.reduce((total, category) => total + (selection[category]?.price ?? 0), 0);
-}
-
-function bindFormReset() {
-  const form = document.querySelector("#lunch-order-form");
-
-  if (!form) {
-    return;
-  }
-
-  form.addEventListener("reset", () => {
-    window.setTimeout(() => {
-      CATEGORY_ORDER.forEach((category) => {
-        selection[category] = null;
-        activeFilters[category] = null;
-      });
-
-      renderAllFilters();
-      renderAllCategories();
-      updateSummary();
-    }, 0);
-  });
-}
-
-function bindFormValidation() {
-  const form = document.querySelector("#lunch-order-form");
-
-  if (!form) {
-    return;
-  }
-
-  form.addEventListener("submit", (event) => {
-    const validation = validateSelection();
-
-    if (validation.valid) {
+    if (!checkoutLink || !checkoutLink.classList.contains("checkout-panel__link--disabled")) {
       return;
     }
 
     event.preventDefault();
-    showNotice(validation.message);
+    showNotice(validateSelection(selection).message);
   });
 }
 
-function validateSelection() {
-  const selectedCategories = CATEGORY_ORDER.filter((category) => category !== "dessert" && selection[category]).sort();
+function updateCheckoutPanel() {
+  const panel = document.querySelector("#checkout-panel");
+  const summaryNode = document.querySelector("#checkout-panel-summary");
+  const totalNode = document.querySelector("#checkout-panel-total");
+  const link = document.querySelector("#checkout-link");
+  const helper = document.querySelector("#checkout-panel-helper");
+  const hasSelection = CATEGORY_ORDER.some((category) => Boolean(selection[category]));
 
-  if (selectedCategories.length === 0) {
-    return {
-      valid: false,
-      message: "Ничего не выбрано. Выберите блюда для заказа"
-    };
+  panel?.classList.toggle("is-hidden", !hasSelection);
+  if (summaryNode) {
+    summaryNode.innerHTML = renderSummaryRows(selection);
   }
 
-  const isValidCombo = comboVariants.some((variant) => hasSameCategories(variant, selectedCategories));
-
-  if (isValidCombo) {
-    return {
-      valid: true,
-      message: ""
-    };
+  if (!hasSelection || !totalNode || !link || !helper) {
+    return;
   }
 
-  const possibleCombos = comboVariants
-    .filter((variant) => selectedCategories.every((category) => variant.includes(category)))
-    .sort((a, b) => a.length - b.length);
+  totalNode.textContent = `${calculateTotal(selection)} ₽`;
 
-  const closestCombo = possibleCombos[0];
+  const validation = validateSelection(selection);
+  const isEnabled = validation.valid;
 
-  if (!closestCombo) {
-    return {
-      valid: false,
-      message: "Состав заказа не подходит под доступные комбо. Измените набор блюд"
-    };
-  }
-
-  const missingCategories = closestCombo.filter((category) => !selectedCategories.includes(category));
-
-  return {
-    valid: false,
-    message: formatMissingMessage(missingCategories)
-  };
+  link.classList.toggle("checkout-panel__link--disabled", !isEnabled);
+  link.setAttribute("aria-disabled", String(!isEnabled));
+  helper.textContent = isEnabled
+    ? "Состав заказа подходит под одно из доступных комбо."
+    : validation.message;
 }
 
-function hasSameCategories(combo, selectedCategories) {
-  return combo.length === selectedCategories.length && combo.every((category) => selectedCategories.includes(category));
-}
+function applyDemoPreset() {
+  const params = new URLSearchParams(window.location.search);
 
-function formatMissingMessage(missingCategories) {
-  const labels = {
-    soup: "суп",
-    "main-course": "главное блюдо",
-    salad: "салат или стартер",
-    drink: "напиток"
-  };
-
-  const translated = missingCategories.map((category) => labels[category]);
-
-  if (translated.length === 1) {
-    return `Добавьте ${translated[0]}, чтобы оформить заказ`;
+  if (params.get("demo") === "notice") {
+    showNotice("Ничего не выбрано. Выберите блюда для заказа");
+    return;
   }
 
-  if (translated.length === 2) {
-    return `Добавьте ${translated[0]} и ${translated[1]}, чтобы собрать допустимое комбо`;
+  if (params.get("demo") !== "selected") {
+    return;
   }
 
-  return `Добавьте ${translated.slice(0, -1).join(", ")} и ${translated.at(-1)}, чтобы собрать допустимое комбо`;
+  CATEGORY_ORDER.forEach((category) => {
+    selection[category] = dishesByCategory[category][0] ?? null;
+  });
+  saveStoredKeywords(selectionToStoredKeywords(selection));
+  renderAllCategories();
 }
 
 function showNotice(message) {
@@ -378,22 +210,4 @@ function showNotice(message) {
     layer.classList.remove("notice-layer--visible");
     layer.innerHTML = "";
   }, { once: true });
-}
-
-function applyDemoPreset() {
-  const params = new URLSearchParams(window.location.search);
-
-  if (params.get("demo") === "notice") {
-    showNotice("Ничего не выбрано. Выберите блюда для заказа");
-    return;
-  }
-
-  if (params.get("demo") !== "selected") {
-    return;
-  }
-
-  CATEGORY_ORDER.forEach((category) => {
-    selection[category] = dishesByCategory[category][0] ?? null;
-  });
-  renderAllCategories();
 }

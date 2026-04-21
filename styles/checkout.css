@@ -1,0 +1,36 @@
+.checkout-page {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.checkout-dish-grid {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.checkout-dish-card {
+  padding-bottom: 24px;
+}
+
+.checkout-empty p {
+  margin: 0;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.checkout-empty a {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+@media (max-width: 800px) {
+  .checkout-dish-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .checkout-dish-grid {
+    grid-template-columns: 1fr;
+  }
+}
