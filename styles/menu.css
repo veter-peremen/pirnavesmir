@@ -1,0 +1,151 @@
+.menu-page .container {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.menu-intro {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 24px;
+}
+
+.menu-intro__content {
+  flex: 1 1 64%;
+}
+
+.menu-intro__note {
+  flex: 0 0 320px;
+  padding: 26px 28px;
+  border: 1px solid rgba(163, 52, 31, 0.12);
+  border-radius: 28px;
+  background:
+    linear-gradient(180deg, rgba(163, 52, 31, 0.08), rgba(163, 52, 31, 0.02)),
+    #fffaf6;
+}
+
+.menu-intro__subtitle {
+  margin: 0 0 14px;
+  font-size: 1.3rem;
+}
+
+.menu-intro__note p {
+  margin: 0 0 12px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.menu-intro__note p:last-child {
+  margin-bottom: 0;
+}
+
+.menu-section {
+  margin: 0;
+}
+
+.menu-section__title {
+  margin: 0 0 22px;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 700;
+}
+
+.dish-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.dish-card {
+  padding: 30px 40px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  border: 2px solid transparent;
+  border-radius: 35px;
+  background-color: #ffffff;
+  cursor: pointer;
+  filter: drop-shadow(17px 19px 24px rgba(0, 0, 0, 0.13));
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.dish-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.dish-card:hover .dish-card__button {
+  color: #ffffff;
+  background-color: var(--accent);
+}
+
+.dish-card__image {
+  width: 100%;
+  border-radius: 35px;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.dish-card__price {
+  margin: 18px 0 8px;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.dish-card__name {
+  margin: 0;
+  font-size: 1.18rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.dish-card__meta {
+  margin: 12px 0 0;
+  font-size: 1.02rem;
+  color: #7f746d;
+}
+
+.dish-card__button {
+  margin-top: auto;
+  padding: 10px 30px;
+  border: none;
+  border-radius: 10px;
+  background-color: #f1eee9;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+@media (max-width: 800px) {
+  .menu-intro {
+    flex-direction: column;
+  }
+
+  .menu-intro__note {
+    flex-basis: auto;
+  }
+
+  .dish-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .menu-section__title {
+    text-align: center;
+  }
+
+  .dish-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dish-card {
+    padding: 22px;
+    border-radius: 28px;
+  }
+
+  .dish-card__image {
+    border-radius: 26px;
+  }
+}

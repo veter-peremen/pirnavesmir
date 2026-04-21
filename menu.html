@@ -8,6 +8,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=PT+Serif:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles/style.css">
+  <link rel="stylesheet" href="styles/menu.css">
+  <link rel="stylesheet" href="styles/print.css" media="print">
 </head>
 <body>
   <header class="site-header">
@@ -15,23 +17,117 @@
       <h1 class="brand">Пир на весь мир</h1>
       <nav class="site-nav" aria-label="Основная навигация">
         <a href="index.html">О нас</a>
-        <a href="menu.html" aria-current="page">Собрать ланч</a>
+        <a href="menu.html" class="active" aria-current="page">Собрать ланч</a>
         <a href="order.html">Заказы</a>
         <a href="#contacts">Контакты</a>
       </nav>
     </div>
   </header>
 
-  <main class="site-main">
+  <main class="site-main menu-page">
     <div class="container">
-      <section class="section placeholder-section" aria-labelledby="menu-page-title">
-        <p class="eyebrow">Следующая лабораторная работа</p>
-        <h2 id="menu-page-title" class="section-title">Во второй лабораторной здесь появится меню славянских обедов</h2>
-        <p class="lead">
-          Страница уже подготовлена под каталог домашних блюд: борщей, щей, пельменей, вареников, каш, драников и горячих закусок.
-          В следующем этапе здесь появится полноценная сетка меню, карточки блюд и структура, от которой можно будет оттолкнуться в следующих лабах.
-        </p>
-        <a class="action-link" href="index.html">Вернуться на главную</a>
+      <section class="section menu-intro" aria-labelledby="menu-intro-title">
+        <div class="menu-intro__content">
+          <p class="eyebrow">Страница меню</p>
+          <h2 id="menu-intro-title" class="section-title">Соберите славянский ланч без случайных компромиссов</h2>
+          <p class="lead">
+            В меню собраны блюда, которые легко складываются в полноценный обед: горячий суп, сытное основное и напиток с ягодной или фруктовой основой.
+            Мы держим спокойную палитру, домашнюю подачу и понятный набор ингредиентов.
+          </p>
+        </div>
+        <aside class="menu-intro__note" aria-label="Подсказка по меню">
+          <h3 class="menu-intro__subtitle">Как собираем набор</h3>
+          <p>1 суп + 1 горячее + 1 напиток</p>
+          <p>Доставка по Москве к выбранному времени</p>
+          <p>Порции рассчитаны на плотный обед без добора снеков</p>
+        </aside>
+      </section>
+
+      <section class="menu-section" id="soups" aria-labelledby="soups-title">
+        <h2 id="soups-title" class="menu-section__title">Выберите суп</h2>
+        <div class="dish-grid">
+          <div class="dish-card">
+            <img src="assets/images/menu/borscht.svg" alt="Борщ с пампушками" class="dish-card__image">
+            <p class="dish-card__price">320 ₽</p>
+            <p class="dish-card__name">Борщ с пампушками</p>
+            <p class="dish-card__meta">420 г</p>
+            <button class="dish-card__button" type="button">Добавить</button>
+          </div>
+
+          <div class="dish-card">
+            <img src="assets/images/menu/shchi.svg" alt="Щи с белыми грибами" class="dish-card__image">
+            <p class="dish-card__price">290 ₽</p>
+            <p class="dish-card__name">Щи с белыми грибами</p>
+            <p class="dish-card__meta">400 г</p>
+            <button class="dish-card__button" type="button">Добавить</button>
+          </div>
+
+          <div class="dish-card">
+            <img src="assets/images/menu/ukha.svg" alt="Уха с судаком и укропом" class="dish-card__image">
+            <p class="dish-card__price">340 ₽</p>
+            <p class="dish-card__name">Уха с судаком и укропом</p>
+            <p class="dish-card__meta">390 г</p>
+            <button class="dish-card__button" type="button">Добавить</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="menu-section" id="mains" aria-labelledby="mains-title">
+        <h2 id="mains-title" class="menu-section__title">Выберите главное блюдо</h2>
+        <div class="dish-grid">
+          <div class="dish-card">
+            <img src="assets/images/menu/pozharsky.svg" alt="Пожарская котлета с картофелем" class="dish-card__image">
+            <p class="dish-card__price">390 ₽</p>
+            <p class="dish-card__name">Пожарская котлета с картофелем</p>
+            <p class="dish-card__meta">310 г</p>
+            <button class="dish-card__button" type="button">Добавить</button>
+          </div>
+
+          <div class="dish-card">
+            <img src="assets/images/menu/vareniki.svg" alt="Вареники с картофелем и грибами" class="dish-card__image">
+            <p class="dish-card__price">280 ₽</p>
+            <p class="dish-card__name">Вареники с картофелем и грибами</p>
+            <p class="dish-card__meta">280 г</p>
+            <button class="dish-card__button" type="button">Добавить</button>
+          </div>
+
+          <div class="dish-card">
+            <img src="assets/images/menu/draniki.svg" alt="Драники со сметаной и луком" class="dish-card__image">
+            <p class="dish-card__price">310 ₽</p>
+            <p class="dish-card__name">Драники со сметаной и луком</p>
+            <p class="dish-card__meta">260 г</p>
+            <button class="dish-card__button" type="button">Добавить</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="menu-section" id="drinks" aria-labelledby="drinks-title">
+        <h2 id="drinks-title" class="menu-section__title">Выберите напиток</h2>
+        <div class="dish-grid">
+          <div class="dish-card">
+            <img src="assets/images/menu/mors.svg" alt="Клюквенный морс" class="dish-card__image">
+            <p class="dish-card__price">140 ₽</p>
+            <p class="dish-card__name">Клюквенный морс</p>
+            <p class="dish-card__meta">300 мл</p>
+            <button class="dish-card__button" type="button">Добавить</button>
+          </div>
+
+          <div class="dish-card">
+            <img src="assets/images/menu/vzvar.svg" alt="Яблочный взвар" class="dish-card__image">
+            <p class="dish-card__price">130 ₽</p>
+            <p class="dish-card__name">Яблочный взвар</p>
+            <p class="dish-card__meta">300 мл</p>
+            <button class="dish-card__button" type="button">Добавить</button>
+          </div>
+
+          <div class="dish-card">
+            <img src="assets/images/menu/kissel.svg" alt="Облепиховый кисель" class="dish-card__image">
+            <p class="dish-card__price">150 ₽</p>
+            <p class="dish-card__name">Облепиховый кисель</p>
+            <p class="dish-card__meta">280 мл</p>
+            <button class="dish-card__button" type="button">Добавить</button>
+          </div>
+        </div>
       </section>
     </div>
   </main>

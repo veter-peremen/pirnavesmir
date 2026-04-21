@@ -1,0 +1,62 @@
+body {
+  background: #ffffff;
+  color: #000000;
+}
+
+.site-header,
+.site-footer,
+.dish-card__button,
+.action-link {
+  display: none;
+}
+
+.site-main {
+  padding: 0;
+}
+
+.section,
+.menu-section {
+  margin: 0 0 20px;
+  padding: 0;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+}
+
+.menu-page .container {
+  gap: 20px;
+}
+
+.menu-intro {
+  display: block;
+}
+
+.menu-intro__note {
+  margin-top: 16px;
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+.dish-grid {
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.dish-card {
+  padding: 0;
+  border: 1px solid #b8b8b8;
+  border-radius: 0;
+  filter: none;
+  break-inside: avoid;
+}
+
+.dish-card__image {
+  border-radius: 0;
+}
+
+.dish-card__price,
+.dish-card__name,
+.dish-card__meta {
+  padding: 0 12px;
+}
